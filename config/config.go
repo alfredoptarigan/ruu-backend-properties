@@ -1,7 +1,5 @@
 package config
 
-package config
-
 func GetValue(key string, defaultKey string) string {
 	viper := NewViperConfig()
 	value := viper.GetString(key)
