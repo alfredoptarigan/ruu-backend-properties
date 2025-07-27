@@ -3,8 +3,9 @@ package config
 import (
 	"context"
 	"fmt"
-	"github.com/redis/go-redis/v9"
 	"sync"
+
+	"github.com/redis/go-redis/v9"
 )
 
 var (

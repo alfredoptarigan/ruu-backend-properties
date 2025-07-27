@@ -50,10 +50,12 @@ func (cv *CustomValidator) Validate(s interface{}) error {
 			// Construct error message
 			var errMsgs []string
 			for field, msg := range errorMap {
-				errMsgs = append(errMsgs, fmt.Sprintf("%s: %s", field, msg))
+				// Fix: Use constant format string
+				errorMsg := fmt.Sprintf("%s: %s", field, msg)
+				errMsgs = append(errMsgs, errorMsg)
 			}
 
-			return fmt.Errorf(strings.Join(errMsgs, "; "))
+			return errors.New(strings.Join(errMsgs, "; "))
 		}
 	}
 	return nil

@@ -57,3 +57,31 @@ func InitializeRouterV1(server *config.Application) {
 
 	}
 }
+
+// SetupRoutes sets up all routes for testing purposes
+func SetupRoutes(app *fiber.App) {
+	api := app.Group("/api")
+	{
+		v1 := api.Group("/v1")
+		{
+			// Ping endpoint
+			v1.Get("/ping", func(ctx *fiber.Ctx) error {
+				return ctx.JSON(fiber.Map{
+					"message": "pong",
+				})
+			})
+
+			auth := v1.Group("/auth")
+			{
+				authController := injectors.InitializeAuthController()
+				authController.Router(auth)
+			}
+
+			user := v1.Group("/user")
+			{
+				userController := injectors.InitializeUserController()
+				userController.Router(user)
+			}
+		}
+	}
+}

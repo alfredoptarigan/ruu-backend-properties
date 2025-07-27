@@ -1,14 +1,16 @@
 package services
 
 import (
-	"alfredo/ruu-properties/config"
-	"alfredo/ruu-properties/pkg/dtos"
 	"errors"
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+
+	"alfredo/ruu-properties/config"
+	"alfredo/ruu-properties/pkg/dtos"
 )
 
 type TokenType string

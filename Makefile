@@ -57,3 +57,31 @@ help:
 	@echo "  migrate      - Run database migrations"
 	@echo "  seed         - Seed database with initial data"
 	@echo "  help         - Show this help message"
+
+
+# Run unit tests only
+test-unit:
+	@echo "Running unit tests..."
+	GO_ENV=test go test -v -short ./pkg/...
+
+# Run integration tests only
+test-integration:
+	@echo "Running integration tests..."
+	go test -v -run Integration ./tests/...
+
+# Run all tests with coverage
+test-coverage:
+	@echo "Running tests with coverage..."
+	GO_ENV=test go test -v -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html
+
+# Run tests in CI/CD environment
+test-ci:
+	@echo "Running tests for CI/CD..."
+	GO_ENV=test go test -v -race -coverprofile=coverage.out ./...
+
+# Setup test environment
+setup-test:
+	@echo "Setting up test environment..."
+	cp example.config.yaml config.yaml
+	@echo "Test environment setup complete"

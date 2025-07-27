@@ -46,7 +46,7 @@ func InitDatabasePostgres() *gorm.DB {
 			Logger: logger.Default.LogMode(logger.Silent),
 		})
 		if err != nil {
-			panic("failed to connect database")
+			panic(err)
 		}
 
 		// Set the connection pool settings

@@ -1,13 +1,15 @@
 package config
 
 import (
-	"alfredo/ruu-properties/pkg/log"
 	"errors"
-	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/spf13/viper"
+
+	"alfredo/ruu-properties/pkg/log"
 )
 
 // DatabaseConfig holds all database configuration
@@ -64,11 +66,17 @@ type viperWrapper struct {
 }
 
 // NewViperConfig initializes a new Viper configuration
+// Dalam function NewViperConfig(), tambahkan:
 func NewViperConfig() ViperConfig {
 	v := viper.New()
 
-	// setup config path
-	v.SetConfigName("config")
+	// Check if running in test environment
+	if os.Getenv("GO_ENV") == "test" {
+		v.SetConfigName("config.test")
+	} else {
+		v.SetConfigName("config")
+	}
+
 	v.SetConfigType("yaml")
 	v.AddConfigPath(setRootPath())
 
@@ -155,6 +163,9 @@ func setRootPath() string {
 	}
 
 	if strings.Contains(wd, "/cmd/cron") {
+		return filepath.Join(wd, "../../")
+	}
+	if strings.Contains(wd, "/tests/integration") {
 		return filepath.Join(wd, "../../")
 	}
 
