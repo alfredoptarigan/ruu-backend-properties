@@ -1,17 +1,31 @@
 package services
 
 import (
-	"alfredo/ruu-properties/pkg/dtos"
-	"alfredo/ruu-properties/pkg/repositories"
+	"fmt"
+
 	"github.com/go-playground/validator/v10"
+
+	"alfredo/ruu-properties/pkg/dtos"
+	"alfredo/ruu-properties/pkg/models"
+	"alfredo/ruu-properties/pkg/repositories"
 )
 
 type UserService interface {
 	Register(request dtos.UserRegisterRequest) error
+	FindUserByUuid(uuid string) (*models.User, error)
 }
 
 type userServiceImpl struct {
 	userRepository repositories.UserRepository
+}
+
+// FindUserByUuid implements UserService.
+func (u *userServiceImpl) FindUserByUuid(uuid string) (*models.User, error) {
+	user, err := u.userRepository.FindUserByUuid(uuid)
+	if err != nil {
+		return nil, fmt.Errorf("%s", "user not found.")
+	}
+	return &user, nil
 }
 
 func (u userServiceImpl) Register(request dtos.UserRegisterRequest) error {

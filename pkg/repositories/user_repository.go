@@ -15,10 +15,24 @@ type UserRepository interface {
 	Login(email string, password string) (user models.User, err error)
 	Register(request dtos.UserRegisterRequest) error
 	FindUserByEmail(email string) (models.User, error)
+	FindUserByUuid(uuid string) (models.User, error)
 }
 
 type userRepositoryImpl struct {
 	db *gorm.DB
+}
+
+// FindUserByUuid implements UserRepository.
+func (u *userRepositoryImpl) FindUserByUuid(uuid string) (models.User, error) {
+	var user models.User
+
+	if err := u.db.Where("uuid = ?", uuid).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return user, fmt.Errorf("user not found")
+		}
+		return user, fmt.Errorf("error retrieving user: %w", err)
+	}
+	return user, nil
 }
 
 func (u *userRepositoryImpl) FindUserByEmail(email string) (models.User, error) {
