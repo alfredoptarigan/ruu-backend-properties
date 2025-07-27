@@ -59,3 +59,14 @@ func InitializeUserController() controllers.UserController {
 
 	return nil
 }
+
+func InitializeClientController() controllers.ClientController {
+	wire.Build(
+		authSet,
+		controllers.NewClientController,
+		services.NewClientService,
+		repositories.NewClientRepository,
+	)
+
+	return nil
+}

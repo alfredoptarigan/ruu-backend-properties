@@ -53,6 +53,12 @@ func InitializeRouterV1(server *config.Application) {
 
 			}
 
+			client := v1.Group("/clients")
+			{
+				clientController := injectors.InitializeClientController()
+				clientController.Router(client)
+			}
+
 		}
 
 	}
@@ -81,6 +87,12 @@ func SetupRoutes(app *fiber.App) {
 			{
 				userController := injectors.InitializeUserController()
 				userController.Router(user)
+			}
+
+			client := v1.Group("/clients")
+			{
+				clientController := injectors.InitializeClientController()
+				clientController.Router(client)
 			}
 		}
 	}

@@ -1,5 +1,41 @@
 basePath: /api/v1
 definitions:
+  dtos.ClientRequest:
+    properties:
+      address:
+        type: string
+      contact_person:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+    required:
+    - address
+    - contact_person
+    - email
+    - name
+    - phone_number
+    type: object
+  dtos.ClientResponse:
+    properties:
+      address:
+        type: string
+      contact_person:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      updated_at:
+        type: string
+    type: object
   dtos.ErrorResponseDTO:
     properties:
       code:
@@ -183,6 +219,52 @@ paths:
       summary: Refresh access token
       tags:
       - auth
+  /clients:
+    post:
+      consumes:
+      - application/json
+      description: Create a new client for renting/selling properties
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Client request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ClientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dtos.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dtos.ClientResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Create a new client
+      tags:
+      - Client
   /user/register:
     post:
       consumes:
@@ -246,4 +328,10 @@ paths:
       summary: Register a new user
       tags:
       - user
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

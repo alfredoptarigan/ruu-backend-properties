@@ -47,6 +47,19 @@ func InitializeUserController() controllers.UserController {
 	return userController
 }
 
+func InitializeClientController() controllers.ClientController {
+	client := config.InitRedis()
+	redisRepository := repositories.NewRedisRepository(client)
+	redisService := services.NewRedisService(redisRepository)
+	db := config.InitDatabasePostgres()
+	userRepository := repositories.NewUserRepository(db)
+	userService := services.NewUserService(userRepository)
+	clientRepository := repositories.NewClientRepository(db)
+	clientService := services.NewClientService(clientRepository)
+	clientController := controllers.NewClientController(redisService, userService, clientService)
+	return clientController
+}
+
 // injector.go:
 
 var initDBPostgresSet = wire.NewSet(config.InitDatabasePostgres)
