@@ -3,6 +3,7 @@ package repositories
 import (
 	"errors"
 	"fmt"
+	"math"
 
 	"gorm.io/gorm"
 
@@ -186,7 +187,7 @@ func (r *clientRepositoryImpl) GetAll(request dtos.ClientGetRequest) ([]*dtos.Cl
 	}
 
 	// Calculate pagination metadata
-	totalPages := int((total + int64(request.Page) - 1) / int64(request.Limit))
+	totalPages := int(math.Ceil(float64(total) / float64(request.Limit)))
 	paginationMeta := &dtos.PaginationMeta{
 		Page:       request.Page,
 		Limit:      request.Limit,
