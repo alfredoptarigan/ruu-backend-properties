@@ -47,7 +47,7 @@ func (suite *AuthIntegrationTestSuite) TestRegisterAndLogin_Success() {
 	// First, register a user
 	registerData := map[string]string{
 		"name":                  "Integration Test User",
-		"email":                 "integration@test.com",
+		"email":                 "integration2@test.com",
 		"password":              "password123",
 		"confirmation_password": "password123",
 		"phone_number":          "+1234567890",

@@ -48,11 +48,13 @@ func (u *userRepositoryImpl) FindUserByEmail(email string) (models.User, error) 
 
 func (u *userRepositoryImpl) Register(request dtos.UserRegisterRequest) error {
 	var existingUser models.User
-	if err := u.db.Unscoped().Debug().Where("email = ?", request.Email).First(&existingUser).Error; err != nil && existingUser.UUID != "" {
+	// Check if email already exists
+	if err := u.db.Unscoped().Where("email = ?", request.Email).First(&existingUser).Error; err == nil {
 		return fmt.Errorf("%s", "Email already exists on database")
 	}
 
-	if err := u.db.Unscoped().Where("phone_number = ?", request.PhoneNumber).First(&existingUser).Error; err != nil && existingUser.UUID != "" {
+	// Check if phone number already exists
+	if err := u.db.Unscoped().Where("phone_number = ?", request.PhoneNumber).First(&existingUser).Error; err == nil {
 		return fmt.Errorf("%s", "Phone number already exists on database")
 	}
 
@@ -66,7 +68,7 @@ func (u *userRepositoryImpl) Register(request dtos.UserRegisterRequest) error {
 		user := models.User{
 			Name:        request.Name,
 			Email:       request.Email,
-			Password:    hashedPassword, // Store the hashed password
+			Password:    hashedPassword,
 			PhoneNumber: request.PhoneNumber,
 			Role:        request.Role,
 			Image:       request.Image,

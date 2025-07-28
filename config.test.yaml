@@ -1,6 +1,6 @@
 application:
   #production, staging, local
-  environment: local
+  environment: test
   port: 9090
 database:
   host: "localhost"

@@ -35,6 +35,8 @@ definitions:
         type: string
       updated_at:
         type: string
+      uuid:
+        type: string
     type: object
   dtos.ErrorResponseDTO:
     properties:
@@ -86,6 +88,31 @@ definitions:
         type: string
       user_uuid:
         type: string
+    type: object
+  dtos.PaginatedSuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/dtos.PaginationMeta'
+      success:
+        type: boolean
+    type: object
+  dtos.PaginationMeta:
+    properties:
+      limit:
+        description: jumlah data per halaman
+        type: integer
+      page:
+        description: halaman saat ini
+        type: integer
+      total:
+        description: total seluruh data
+        type: integer
+      total_pages:
+        description: total halaman
+        type: integer
     type: object
   dtos.SuccessResponse:
     properties:
@@ -220,6 +247,78 @@ paths:
       tags:
       - auth
   /clients:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all clients with pagination and search functionality
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search term
+        in: query
+        name: search
+        type: string
+      - default: name
+        description: Field to search by (name, email, phone_number, contact_person)
+        in: query
+        name: search_by
+        type: string
+      - default: created_at
+        description: Field to sort by (name, email, created_at, updated_at)
+        in: query
+        name: sort_by
+        type: string
+      - default: desc
+        description: Sort order (asc, desc)
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dtos.PaginatedSuccessResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dtos.ClientResponse'
+                  type: array
+                meta:
+                  $ref: '#/definitions/dtos.PaginationMeta'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get all clients
+      tags:
+      - Client
     post:
       consumes:
       - application/json
@@ -263,6 +362,146 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new client
+      tags:
+      - Client
+  /clients/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information of a specific client
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dtos.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dtos.ClientResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Get a client by ID
+      tags:
+      - Client
+  /clients/{id}/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a client by ID
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Delete a client
+      tags:
+      - Client
+  /clients/{id}/update:
+    put:
+      consumes:
+      - application/json
+      description: Update client information by ID
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Client request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ClientRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dtos.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dtos.ClientResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Update an existing client
       tags:
       - Client
   /user/register:
