@@ -60,6 +60,19 @@ func InitializeClientController() controllers.ClientController {
 	return clientController
 }
 
+func InitializeFeatureController() controllers.FeatureController {
+	db := config.InitDatabasePostgres()
+	featureRepository := repositories.NewFeatureRepository(db)
+	featureService := services.NewFeatureService(featureRepository)
+	userRepository := repositories.NewUserRepository(db)
+	userService := services.NewUserService(userRepository)
+	client := config.InitRedis()
+	redisRepository := repositories.NewRedisRepository(client)
+	redisService := services.NewRedisService(redisRepository)
+	featureController := controllers.NewFeatureController(featureService, userService, redisService)
+	return featureController
+}
+
 // injector.go:
 
 var initDBPostgresSet = wire.NewSet(config.InitDatabasePostgres)

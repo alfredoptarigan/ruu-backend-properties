@@ -70,3 +70,14 @@ func InitializeClientController() controllers.ClientController {
 
 	return nil
 }
+
+func InitializeFeatureController() controllers.FeatureController {
+	wire.Build(
+		authSet,
+		controllers.NewFeatureController,
+		services.NewFeatureService,
+		repositories.NewFeatureRepository,
+	)
+
+	return nil
+}

@@ -37,7 +37,7 @@ func InitTestDatabase() *gorm.DB {
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
 
 	// Auto migrate for tests
-	err = db.AutoMigrate(&models.User{}, &models.Client{}) // Add all your models here
+	err = db.AutoMigrate(&models.User{}, &models.Client{}, &models.Feature{}) // Add all your models here
 	if err != nil {
 		log.Fatal("Failed to migrate test database:", err)
 	}
